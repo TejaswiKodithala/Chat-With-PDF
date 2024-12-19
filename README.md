@@ -93,3 +93,5 @@ Follow these steps to get the project up and running on your local machine.
 2. **Text Extraction**: The text from the PDF is extracted using `PyPDF2`, and the content is broken into chunks.
 3. **Table Extraction**: Using `pdfplumber`, tables from a specific page of the PDF can be extracted and returned to the user.
 4. **Semantic Search**: The text chunks are encoded into embeddings using the `Sentence-Transformer` model, which is then used to compare and find the best matching text to the user's query.
+
+
