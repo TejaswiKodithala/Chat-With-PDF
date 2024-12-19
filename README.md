@@ -55,6 +55,10 @@ Follow these steps to get the project up and running on your local machine.
 
 5. Open your browser and visit `http://127.0.0.1:5000` to access the PDF Query System.
 
+## Output
+![output](output%20images/img1.png)![output](output%20images/img2.png)![output](output%20images/img3.png)
+![output](output%20images/img4.png)
+
 
 
 
