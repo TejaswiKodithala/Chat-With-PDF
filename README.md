@@ -39,16 +39,19 @@ Follow these steps to get the project up and running on your local machine.
 
 1. **Clone the repository**:
 
-   git clone 
+   ```
+   git clone https://github.com/TejaswiKodithala/Chat-With-PDF-using-RAG-pipeline
 
 
 2. **Install the required dependencies**:
 
+   ```
    pip install -r requirements.txt
 
 3. **Run the Flask app**:
 
-   ```python app.py
+   ```
+   python app.py
 
 5. Open your browser and visit `http://127.0.0.1:5000` to access the PDF Query System.
 
