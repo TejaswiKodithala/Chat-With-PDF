@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Query System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="section">
+            <h1>Chat with PDF</h1>
+            <h1>Welcome to the PDF Query System</h1>
+            <p>Extract and query content from your PDFs with ease!</p>
+        </section>
+
+        <!-- Chat Section -->
+        <section id="chat" class="section">
+            <h2>Chat</h2>
+            <div id="uploadSection">
+                <h3>Upload PDF</h3>
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <input type="file" id="fileInput" name="file">
+                    <button type="button" id="uploadButton">Upload</button>
+                </form>
+                <div id="uploadResponse"></div>
+            </div>
+
+            <div id="querySection" class="section">
+                <h2>Query PDF</h2>
+                <div>
+                    <input type="text" id="queryInput" placeholder="Enter your question" />
+                    <button id="queryButton">Ask</button>
+                </div>
+                <div id="queryResponse"></div>
+            </div>
+            
+        </section>
+
+        
+    </main>
+
+
+    <script>
+       $(document).ready(function () {
+    // Smooth Scrolling
+    $('.navbar a').on('click', function (e) {
+        e.preventDefault();
+        const target = $(this).attr('href');
+        $('html, body').animate({
+            scrollTop: $(target).offset().top
+        }, 800);
+    });
+
+    // Upload PDF
+    $('#uploadButton').on('click', function () {
+        const fileInput = $('#fileInput')[0].files[0];
+        if (!fileInput) {
+            $('#uploadResponse').text('Please select a file.').css('color', 'red');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', fileInput);
+
+        $.ajax({
+            url: '/upload',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                $('#uploadResponse')
+                    .text('PDF uploaded successfully!')
+                    .css({ color: 'green', textAlign: 'center' });
+            },
+            error: function (xhr) {
+                $('#uploadResponse')
+                    .text('Error uploading the PDF.')
+                    .css({ color: 'red', textAlign: 'center' });
+            }
+        });
+    });
+
+    // Query PDF
+    $('#queryButton').on('click', function () {
+        const query = $('#queryInput').val();
+        if (!query) {
+            $('#queryResponse').text('Please enter a query.').css('color', 'red');
+            return;
+        }
+
+        $.ajax({
+            url: '/query',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ query: query }),
+            success: function (response) {
+                $('#queryInput').val(''); // Clear the input box
+
+                // Display question and answer
+                if (Array.isArray(response.response)) {
+                    // Render table if response is a table
+                    let tableHTML = '<table border="1" class="center-table"><tr>';
+                    response.response[0].row.forEach((col) => tableHTML += `<th>${col}</th>`);
+                    tableHTML += '</tr>';
+                    response.response.forEach((rowObj) => {
+                        tableHTML += '<tr>';
+                        rowObj.row.forEach((cell) => tableHTML += `<td>${cell}</td>`);
+                        tableHTML += '</tr>';
+                    });
+                    tableHTML += '</table>';
+                    $('#queryResponse').html(
+                        `<p><strong>Question:</strong> ${query}</p>${tableHTML}`
+                    ).css('text-align', 'center');
+                } else {
+                    $('#queryResponse').html(
+                        `<p><strong>Question:</strong> ${query}</p>
+                         <p><strong>Answer:</strong> ${response.response}</p>`
+                    ).css({ color: '#333', textAlign: 'center' });
+                }
+            },
+            error: function (xhr) {
+                $('#queryResponse')
+                    .text('Error processing query.')
+                    .css({ color: 'red', textAlign: 'center' });
+            }
+        });
+    });
+});
+
+
+    </script>
+</body>
+</html>
